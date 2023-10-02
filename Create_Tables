@@ -98,3 +98,10 @@ CREATE TABLE [dbo].[Employee_Skills] (
     CONSTRAINT [EMPLID_FK] FOREIGN KEY ([EMPLID]) REFERENCES [dbo].[Employee] ([EMPLID])
 );
 
+-- Create Skills Table
+CREATE TABLE [dbo].[Skills] (
+    [Skill_ID] INT           IDENTITY (1, 1) NOT NULL,
+    [Skill]    VARCHAR (MAX) NOT NULL,
+    CONSTRAINT [PK_Skills] PRIMARY KEY CLUSTERED ([Skill_ID] ASC)
+);
+
