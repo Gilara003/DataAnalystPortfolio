@@ -64,7 +64,7 @@ CREATE TABLE [dbo].[Requests] (
     [Subordinates]               BINARY (50)    CONSTRAINT [DEFAULT_Requests_Subordinates] DEFAULT 0 NOT NULL,
     [Reason_for_Subordinates]    VARCHAR (MAX)  NULL,
     [Duties_Summary]             TEXT           NOT NULL,
-    [Status]                     VARCHAR (50)   CONSTRAINT [DEFAULT_Requests_Status] DEFAULT New NOT NULL,
+    [Status]                     VARCHAR (50)   NOT NULL,
     CONSTRAINT [PK_Requests] PRIMARY KEY CLUSTERED ([ReqId] ASC)
 );
 
