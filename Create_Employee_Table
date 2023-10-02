@@ -5,88 +5,33 @@ Date: 10/02/2023
 Description: This script is to create the necessary tables for the Temp Agency Database.
 */
 
+SET ANSI_NULLS ON
 GO
-SET ANSI_NULLS, ANSI_PADDING, ANSI_WARNINGS, ARITHABORT, CONCAT_NULL_YIELDS_NULL, QUOTED_IDENTIFIER ON;
-
-SET NUMERIC_ROUNDABORT OFF;
-
-
+SET QUOTED_IDENTIFIER ON
 GO
-:setvar DatabaseName "MAVTempsDatabase"
-:setvar DefaultFilePrefix "MAVTempsDatabase"
-:setvar DefaultDataPath ""
-:setvar DefaultLogPath ""
-
+CREATE TABLE [dbo].[Employee](
+	[EMPLID] [int] IDENTITY(1000000000,1) NOT NULL,
+	[FirstName] [nvarchar](max) NOT NULL,
+	[LastName] [nvarchar](max) NOT NULL,
+	[ProgramStatus] [nvarchar](8) NOT NULL,
+	[Phone] [nvarchar](10) NULL,
+	[Email] [nvarchar](128) NOT NULL,
+	[Job_Email] [nvarchar](128) NULL,
+	[Subscription] [binary](1) NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-:on error exit
+ALTER TABLE [dbo].[Employee] ADD  CONSTRAINT [PK_Employee] PRIMARY KEY CLUSTERED 
+(
+	[EMPLID] ASC
+)WITH (STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/*
-Detect SQLCMD mode and disable script execution if SQLCMD mode is not supported.
-To re-enable the script after enabling SQLCMD mode, execute the following:
-SET NOEXEC OFF; 
-*/
-:setvar __IsSqlCmdEnabled "True"
+ALTER TABLE [dbo].[Employee] ADD  CONSTRAINT [DEFAULT_Employee_Subscription]  DEFAULT ((1)) FOR [Subscription]
 GO
-IF N'$(__IsSqlCmdEnabled)' NOT LIKE N'True'
-    BEGIN
-        PRINT N'SQLCMD mode must be enabled to successfully execute this script.';
-        SET NOEXEC ON;
-    END
-
-
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Temps Unique Employee Identification Number' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Employee', @level2type=N'COLUMN',@level2name=N'EMPLID'
 GO
-
-IF (SELECT OBJECT_ID('tempdb..#tmpErrors')) IS NOT NULL DROP TABLE #tmpErrors
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Temps First Name' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Employee', @level2type=N'COLUMN',@level2name=N'FirstName'
 GO
-CREATE TABLE #tmpErrors (Error int)
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Temps Last Name' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Employee', @level2type=N'COLUMN',@level2name=N'LastName'
 GO
-SET XACT_ABORT ON
-GO
-SET TRANSACTION ISOLATION LEVEL READ COMMITTED
-GO
-BEGIN TRANSACTION
-GO
-PRINT N'Rename [dbo].[Employee] to Employee1';
-
-
-GO
-EXECUTE sp_rename @objname = N'[dbo].[Employee]', @newname = N'Employee1', @objtype = N'OBJECT';
-
-
-GO
-IF @@ERROR <> 0
-   AND @@TRANCOUNT > 0
-    BEGIN
-        ROLLBACK;
-    END
-
-IF OBJECT_ID(N'tempdb..#tmpErrors') IS NULL
-    CREATE TABLE [#tmpErrors] (
-        Error INT
-    );
-
-IF @@TRANCOUNT = 0
-    BEGIN
-        INSERT  INTO #tmpErrors (Error)
-        VALUES                 (1);
-        BEGIN TRANSACTION;
-    END
-
-
-GO
-
-IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
-GO
-IF @@TRANCOUNT>0 BEGIN
-PRINT N'The transacted portion of the database update succeeded.'
-COMMIT TRANSACTION
-END
-ELSE PRINT N'The transacted portion of the database update failed.'
-GO
-IF (SELECT OBJECT_ID('tempdb..#tmpErrors')) IS NOT NULL DROP TABLE #tmpErrors
-GO
-GO
-PRINT N'Update complete.';
-
-
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Determines whether Temp is in Program or not. Options are "Active" or "Inactive".' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'Employee', @level2type=N'COLUMN',@level2name=N'ProgramStatus'
 GO
