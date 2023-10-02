@@ -70,8 +70,8 @@ CREATE TABLE [dbo].[Requests] (
 
 
 GO
-CREATE CLUSTERED INDEX [Index_Requests_1]
-    ON [dbo].[Requests]([EFFDt] ASC, [SeqNumber] ASC);
+CREATE UNIQUE NONCLUSTERED INDEX [Index_Requests_1]
+    ON [dbo].[Requests]([SeqNumber] ASC);
 
 
 GO
@@ -88,5 +88,4 @@ EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'When a prev
 
 GO
 EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'When a request needs to be modified, but want to keep the original request.', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'Requests', @level2type = N'INDEX', @level2name = N'Index_Requests_1';
-
 
